@@ -2,7 +2,7 @@ name: Ticket watcher
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
+    - cron: "*/5 * * * *"   # every 10 minutes (UTC)
   workflow_dispatch:          # lets you run it by hand from the Actions tab
     inputs:
       test_alert:
@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 

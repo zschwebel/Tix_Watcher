@@ -2,7 +2,7 @@ name: Ticket watcher
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # every 10 minutes (UTC)
+    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
   workflow_dispatch:          # lets you run it by hand from the Actions tab
     inputs:
       test_alert:

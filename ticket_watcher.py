@@ -29,7 +29,7 @@ import requests
 from bs4 import BeautifulSoup
 
 URL = "https://americanrepertorytheater.org/shows-events/1972-a-rock-opera/"
-CHECK_EVERY_SECONDS = 10 * 60
+CHECK_EVERY_SECONDS = 5 * 60
 STATE_FILE = Path(__file__).with_name("ticket_state.json")
 
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")

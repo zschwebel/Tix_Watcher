@@ -1,0 +1,51 @@
+name: Ticket watcher
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
+  workflow_dispatch:          # lets you run it by hand from the Actions tab
+    inputs:
+      test_alert:
+        description: "Send a test alert instead of checking"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write             # needed to save ticket_state.json back to the repo
+
+concurrency:
+  group: ticket-watcher
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install requests beautifulsoup4
+
+      - name: Check tickets
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          ALERT_TO: ${{ secrets.ALERT_TO }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          if [ "${{ inputs.test_alert }}" = "true" ]; then
+            python ticket_watcher.py --test
+          else
+            python ticket_watcher.py --once
+          fi
+
+      - name: Save state (so you only get alerted once per performance)
+        run: |
+          git config user.name "ticket-bot"
+          git config user.email "ticket-bot@users.noreply.github.com"
+          git add ticket_state.json 2>/dev/null || exit 0
+          git diff --cached --quiet || (git commit -m "Update ticket state" && git push)

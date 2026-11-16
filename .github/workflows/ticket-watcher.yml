@@ -1,8 +1,10 @@
 name: Ticket watcher
 
+# Retired 2026-11-15: schedule removed so it no longer runs/emails automatically.
+# To re-enable, add back:
+#   schedule:
+#     - cron: "*/10 * * * *"
 on:
-  schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
   workflow_dispatch:          # lets you run it by hand from the Actions tab
     inputs:
       test_alert:
